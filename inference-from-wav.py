@@ -9,11 +9,16 @@ from models import BetaVAEVC
 from audio import TestUtils, Audio
 
 
+os.environ["CUDA_VISIBLE_DEVICES"] = "0"
+os.environ["TF_FORCE_GPU_ALLOW_GROWTH"] = "true"
+
+
 def read_mels(wav_list_f, audio_processor):
+    print("读取mel")
     mels = []
     mel_names = []
     with open(wav_list_f, 'r', encoding='utf-8') as f:
-        for line in f:
+        for line in tqdm(f):
             mel = extract_mel(line.strip(), audio_processor).astype(np.float32)
             mels.append(mel)
             name = line.strip().split('/')[-1].split('.')[0]
@@ -42,21 +47,26 @@ def synthesize_from_mel(args):
     tester = TestUtils(hparams, args.test_dir)
     audio_processor = Audio(hparams.Audio)
     # setup model
+    print("setup model")
     model = BetaVAEVC(hparams)
     checkpoint = tf.train.Checkpoint(model=model)
     checkpoint.restore(ckpt_path).expect_partial()
-
+    print("setup model done")
     # set up tf function
+    print("set up tf function")
     @tf.function(input_signature=[
         tf.TensorSpec(shape=[None, None, hparams.Audio.num_mels], dtype=tf.float32),
         tf.TensorSpec(shape=[None, None, hparams.Audio.num_mels], dtype=tf.float32),
         tf.TensorSpec(shape=[None], dtype=tf.int32)])
     def vc(mels, mel_ext, m_lengths):
+        print(f"进行推理,{mels.shape}")
         out, _ = model.post_inference(mels, m_lengths, mel_ext)
         return out
-
+    
+    print("translate to mel")
     src_mels, src_names = read_mels(args.src_wavs, audio_processor)
     ref_mels, ref_names = read_mels(args.ref_wavs, audio_processor)
+    print("translate to mel done")
     for src_mel, src_name in tqdm(zip(src_mels, src_names)):
         for ref_mel, ref_name in zip(ref_mels, ref_names):
             while ref_mel.shape[0] < hparams.Dataset.chunk_size:
@@ -69,16 +79,16 @@ def synthesize_from_mel(args):
             ids = ['{}_to_{}'.format(src_name, ref_name)]
             prediction = vc(src_mel_batch, ref_mel_batch, mel_len_batch)
             # tester.synthesize_and_save_wavs(
-            #     ckpt_step, prediction.numpy(), mel_len_batch.numpy(), ids, prefix='test')
-            tester.write_mels(ckpt_step, prediction.numpy(), mel_len_batch.numpy(), ids, prefix='test')
+            #     "", prediction.numpy(), mel_len_batch.numpy(), ids, prefix='')
+            tester.write_mels("", prediction.numpy(), mel_len_batch.numpy(), ids, prefix='')
     return
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser('')
-    parser.add_argument('--ckpt_path', type=str, help='path to the model ckpt')
-    parser.add_argument('--test_dir', type=str, help='directory to save test results')
-    parser.add_argument('--src_wavs', type=str, help='source wav file list')
-    parser.add_argument('--ref_wavs', type=str, help='reference wav npy file list')
+    parser.add_argument('--ckpt_path', type=str, default="/root/autodl-tmp/ckpt/ckpt-500",help='path to the model ckpt')
+    parser.add_argument('--test_dir', type=str,default="output", help='directory to save test results')
+    parser.add_argument('--src_wavs', type=str, default="/root/BetaVAE_VC/source.txt",help='source wav file list')
+    parser.add_argument('--ref_wavs', type=str, default="/root/BetaVAE_VC/target.txt",help='reference wav npy file list')
     main_args = parser.parse_args()
     synthesize_from_mel(main_args)

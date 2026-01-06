@@ -17,7 +17,7 @@ class TestUtils:
         for i in range(mel_batch.shape[0]):
             mel = mel_batch[i][:mel_lengths[i], :]
             idx = ids[i].decode('utf-8') if type(ids[i]) is bytes else ids[i]
-            mel_name = os.path.join(self.save_dir, '{}-{}-{}.npy'.format(prefix, idx, step))
+            mel_name = os.path.join(self.save_dir, '{}.npy'.format(idx))#.format(prefix, idx, step))
             np.save(mel_name, mel)
         return
 
@@ -25,7 +25,7 @@ class TestUtils:
         def _synthesize(mel, fid):
             wav_arr = self.prcocessor.inv_mel_spectrogram(mel.T)
             wav_arr = self.prcocessor.inv_preemphasize(wav_arr)
-            self.prcocessor.save_wav(wav_arr, os.path.join(self.save_dir, '{}-{}-{}.wav'.format(prefix, fid, step)))
+            self.prcocessor.save_wav(wav_arr, os.path.join(self.save_dir, '{}.wav'.format(fid)))#.format(prefix, idx, step))
             return
         threads = []
         for i in range(mel_batch.shape[0]):

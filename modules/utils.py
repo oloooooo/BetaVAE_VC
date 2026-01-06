@@ -137,7 +137,7 @@ class PostNet(tf.keras.layers.Layer):
     def call(self, inputs, training=None):
         conv_out = inputs
         for conv in self.conv_stack:
-            conv_out = conv(conv_out, training)
+            conv_out = conv(conv_out, training=training)
         return conv_out
 
 

@@ -130,3 +130,7 @@ dmypy.json
 
 # pycharm
 .idea/
+checkpoints/
+output/
+unseen/
+unseen_speaker/

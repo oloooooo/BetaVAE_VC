@@ -1,3 +1,8 @@
+## 使用uv 重构这个代码
+uv sync 即可安装这个环境
+目前进行了推理可以跑的动
+
+
 ### BetaVAE_VC
 This repo contains code for paper "Disentangled Speech Representation Learning for One-Shot Cross-Lingual Voice Conversion Using ß-VAE" in SLT 2022.
 ####  [Samples](https://beta-vaevc.github.io/) | [Paper](https://www1.se.cuhk.edu.hk/~hccl/publications/pub/2023%20SLT2022-Beta_VAE_based_one_shot_cross_lingual_VC.pdf) | [Pretrained Models](https://drive.google.com/drive/folders/1FerYnoB60B3aQgt-lAO9g8D3u0RoJe9T?usp=sharing)

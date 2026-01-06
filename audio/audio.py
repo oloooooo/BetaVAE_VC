@@ -121,7 +121,7 @@ class Audio:
 
     def _griffin_lim(self, S):
         angles = np.exp(2j * np.pi * np.random.rand(*S.shape))
-        S_complex = np.abs(S).astype(np.complex)
+        S_complex = np.abs(S).astype(np.complex_)
         y = self._istft(S_complex * angles)
         for i in range(self.hps.griffin_lim_iters):
             angles = np.exp(1j * np.angle(self._stft(y)))
@@ -201,12 +201,12 @@ class Audio:
     def _build_mel_basis(self):
         n_fft = (self.hps.num_freq - 1) * 2
         return librosa.filters.mel(
-            self.hps.sample_rate,
-            n_fft=n_fft,
-            n_mels=self.hps.num_mels,
-            fmin=self.hps.min_mel_freq,
-            fmax=self.hps.max_mel_freq)
-
+                sr=self.hps.sample_rate,
+                n_fft=n_fft,
+                n_mels=self.hps.num_mels,
+                fmin=self.hps.min_mel_freq,
+                fmax=self.hps.max_mel_freq,
+            )
     @staticmethod
     def _amp_to_db(x):
         return 20 * np.log10(np.maximum(1e-5, x))

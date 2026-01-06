@@ -1,0 +1,13 @@
+[project]
+name = "betavae-vc"
+version = "0.1.0"
+requires-python = "==3.10.19"
+dependencies = [
+    "librosa==0.10.2",
+    "matplotlib>=3.10.8",
+    "numpy==1.26.*",
+    "pysptk>=1.0.1",
+    "soundfile>=0.13.1",
+    "tensorflow[and-cuda]>=2.20.0",
+    "tqdm>=4.67.1",
+]
