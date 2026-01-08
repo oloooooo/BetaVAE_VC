@@ -87,8 +87,8 @@ def synthesize_from_mel(args):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser('')
     parser.add_argument('--ckpt_path', type=str, default="/root/autodl-tmp/ckpt/ckpt-500",help='path to the model ckpt')
-    parser.add_argument('--test_dir', type=str,default="output", help='directory to save test results')
-    parser.add_argument('--src_wavs', type=str, default="/root/BetaVAE_VC/source.txt",help='source wav file list')
-    parser.add_argument('--ref_wavs', type=str, default="/root/BetaVAE_VC/target.txt",help='reference wav npy file list')
+    parser.add_argument('--test_dir', type=str,default="betaVC", help='directory to save test results')
+    parser.add_argument('--src_wavs', type=str, default="/root/BetaVAE_VC/source_.txt",help='source wav file list')
+    parser.add_argument('--ref_wavs', type=str, default="/root/BetaVAE_VC/target_.txt",help='reference wav npy file list')
     main_args = parser.parse_args()
     synthesize_from_mel(main_args)
