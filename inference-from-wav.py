@@ -67,6 +67,7 @@ def synthesize_from_mel(args):
     src_mels, src_names = read_mels(args.src_wavs, audio_processor)
     ref_mels, ref_names = read_mels(args.ref_wavs, audio_processor)
     print("translate to mel done")
+    index_src = 0 
     for src_mel, src_name in tqdm(zip(src_mels, src_names)):
         for ref_mel, ref_name in zip(ref_mels, ref_names):
             while ref_mel.shape[0] < hparams.Dataset.chunk_size:
